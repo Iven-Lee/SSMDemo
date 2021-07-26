@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--spring配置文件： 声明service，dao，工具类等对象-->
+
+    <context:property-placeholder location="classpath:conf/jdbc.properties" />
+
+    <!--声明数据源，连接数据库-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <!--SqlSessionFactoryBean创建SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation"  value="classpath:conf/mybatis.xml" />
+    </bean>
+    
+    <!--声明mybatis的扫描器，创建dao对象-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <property name="basePackage" value="com.Iven.dao" />
+    </bean>
+
+    <!--声明service的注解@Service所在的包名位置-->
+    <context:component-scan base-package="com.Iven.service" />
+
+
+
+    <!--事务配置：注解的配置， aspectj的配置-->
+    <!--声明自动代理生成器：使用aspectj框架内部的功能，创建目标对象的代理对象。
+        创建代理对象是在内存中实现的， 修改目标对象的内存中的结构。 创建为代理对象
+        所以目标对象就是被修改后的代理对象.
+
+        aspectj-autoproxy:会把spring容器中的所有的目标对象，一次性都生成代理对象。
+    -->
+    <!--<aop:aspectj-autoproxy />-->
+    <!--
+       如果你期望目标类有接口，使用cglib代理
+       proxy-target-class="true":告诉框架，要使用cglib动态代理
+    -->
+    <!--<aop:aspectj-autoproxy proxy-target-class="true"/>-->
+</beans>

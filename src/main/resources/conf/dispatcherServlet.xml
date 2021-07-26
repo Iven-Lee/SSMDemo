@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--springmvc配置文件， 声明（界面层）controller和其它web相关的对象-->
+    <context:component-scan base-package="com.Iven.controller" />
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!--
+      0. 注解驱动
+      1. 响应ajax请求，返回json
+      2. 解决静态资源访问问题。
+    -->
+    <mvc:annotation-driven />
+
+
+    <!--静态资源由 Web 服务器默认的Servlet 处理，非静态资源的请求，由 DispatcherServlet 处理-->
+    <mvc:default-servlet-handler/>
+    <!--
+        <mvc:annotation-driven />与<mvc:default-servlet-handler/>
+           当两种标签都没有的时候，框架默认注册的有AnnotationMethodHandlerAdapter这个bean，
+        所以能够处理@RequestMapping这个注解，
+        但是只配置了<mvc:default-servlet-handler/>时所注册的三个bean都不能处理@RequestMapping注解，
+        因此无法找到相应的Controller，进而无法进行访问路径的映射，
+        当两种标签都有的时候，<mvc:annotation-driven/>会注册一个RequestMappingHandlerAdapter的bean，
+        这个bean能够处理@RequestMapping这个注解。
+    -->
+</beans>
